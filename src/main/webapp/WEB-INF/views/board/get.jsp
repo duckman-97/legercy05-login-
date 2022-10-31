@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="../includes/header.jsp" %>
 <%@ taglib uri = "http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri = "http://www.springframework.org/security/tags" prefix="sec"  %>
 
 
   <div class="row">
@@ -85,8 +86,12 @@
                      <div class = "panel-heading">
                      
                      <i class = "fa fa-comments fa-fw"></i> Reply
+                     <sec:authorize access="isAuthenticated()">
                       <button id = 'addReplyBtn' class = 'btn btn-primary btn-xs pull-right'>New reply</button>
+                     </sec:authorize>
+                     
                      </div>
+                     
                     
                      
                      
@@ -175,7 +180,7 @@ aria-hidden = "true">&times;</button>
 <button id = 'modalRemoveBtn' type = "button" class = "btn btn-danger">Remove</button>
 
 
-<button id = 'modalRegisterBtn' type = 'button' class = 'btn btn-primary' data-dismiss = 'modal'>modify</button>
+<button id = 'modalRegisterBtn' type = 'button' class = 'btn btn-primary' data-dismiss = 'modal'>regist</button>
 <button id = 'modalCloseBtn' type = "button" class = "btn btn-default" data-dismiss = "modal">Close</button>
 
 
@@ -261,6 +266,18 @@ aria-hidden = "true">&times;</button>
 	  var modalRemoveBtn = $("#modalRemoveBtn");
 	  var modalRegisterBtn = $("#modalRegisterBtn");
 	  
+	  var replyer = null;
+	  
+	 <sec:authorize access="isAuthenticated()">
+	  
+	  replyer = '<sec:authentication property="principal.username"/>';
+	  
+	  </sec:authorize>
+
+	  
+	  var csrfHeaderName = "${_csrf.headerName}";
+	  var csrfTokenValue = "${_csrf.token}";
+	  
 
 		
 		
@@ -268,6 +285,7 @@ aria-hidden = "true">&times;</button>
 	  $("#addReplyBtn").on("click",function(e){
 		
 		  modal.find("input").val("");
+		  modal.find("input[name='replyer']").val(replyer);
 		  modalInputReplyDate.closest("div").hide();
 		  modal.find("button[id !='modalCloseBtn']").hide();
 		  
@@ -279,6 +297,15 @@ aria-hidden = "true">&times;</button>
 		  
 	  });
 	  
+	  
+	  
+	  
+	  $(document).ajaxSend(function(e,xhr,options){
+		
+		  xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+		  
+		  
+	  });
 	  
 	  
 	  
