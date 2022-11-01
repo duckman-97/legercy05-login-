@@ -26,6 +26,9 @@
 		values (#{bno},	#{title}, #{content}, #{writer})
 	</insert>
 
+
+
+
 	<select id="read" resultType="org.zerock.domain.BoardVO">
 		select * from tbl_board where bno =	#{bno}
 	</select>
@@ -82,14 +85,18 @@
 	       bno, title, content, writer, regdate, updatedate ,replycnt
 	    from
 	      (
-	        select /* INDEX_DESC(tbl_board pk_board)*/
+	      select /*+INDEX_DESC(tbl_board pk_board) */
 	           rownum rn, bno, title, content, writer, regdate, updatedate,replycnt
 	        from
 	           tbl_board
 	        where 
+	        
+	        
 	    ]]>    
 	   
 	     <include refid="criteria"></include>
+	     
+	     
 	  <![CDATA[
 	    rownum <= #{pageNum} * #{amount}
 	   )
